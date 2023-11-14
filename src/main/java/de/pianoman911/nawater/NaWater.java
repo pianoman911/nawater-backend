@@ -1,10 +1,12 @@
 package de.pianoman911.nawater;
 
+import com.google.gson.Gson;
 import de.pianoman911.nawater.archiver.Archiver;
 import de.pianoman911.nawater.archiver.SQLArchiver;
 import de.pianoman911.nawater.config.ConfigLoader;
 import de.pianoman911.nawater.config.NaWaterConfig;
 import de.pianoman911.nawater.grabbing.GrabberManager;
+import de.pianoman911.nawater.web.WebServer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +17,7 @@ import java.nio.file.Path;
 
 public class NaWater {
 
+    public static final Gson GSON = new Gson();
     private static final Logger LOGGER = LogManager.getLogger("NaWater");
 
     static {
@@ -43,6 +46,12 @@ public class NaWater {
 
             LOGGER.info("Starting data grabbers...");
             this.grabberManager = new GrabberManager(this);
+
+            LOGGER.info("Starting Webserver...");
+            new WebServer(this).start();
+
+            LOGGER.info("Starting console...");
+            new NaWaterConsole(this).startThread();
 
             double startingTime = (System.currentTimeMillis() - bootTime) / 1000d;
             double startTime = Math.round(startingTime * 100d) / 100d;

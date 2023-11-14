@@ -2,7 +2,7 @@ package de.pianoman911.nawater.data;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import de.pianoman911.nawater.grabbing.DataGrabber;
+import de.pianoman911.nawater.NaWater;
 
 import java.util.UUID;
 
@@ -10,8 +10,8 @@ public record Dashboard(String ___typename, DashboardData dashboardData, DeviceI
 
     public static Dashboard of(JsonObject json) {
         String type = json.get("__typename").getAsString();
-        DashboardData dashboardData = DashboardData.of(DataGrabber.GSON.fromJson(json.get("dashboardData").getAsString().replace("\\", ""), JsonArray.class));
-        DeviceInformation deviceInformation = DeviceInformation.of(DataGrabber.GSON.fromJson(json.get("deviceInformation").getAsString().replace("\\", ""), JsonObject.class), dashboardData.description());
+        DashboardData dashboardData = DashboardData.of(NaWater.GSON.fromJson(json.get("dashboardData").getAsString().replace("\\", ""), JsonArray.class));
+        DeviceInformation deviceInformation = DeviceInformation.of(NaWater.GSON.fromJson(json.get("deviceInformation").getAsString().replace("\\", ""), JsonObject.class), dashboardData.description());
         UUID id = UUID.fromString(json.get("id").getAsString());
 
         return new Dashboard(type, dashboardData, deviceInformation, id);

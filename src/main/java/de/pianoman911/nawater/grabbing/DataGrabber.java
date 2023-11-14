@@ -1,7 +1,7 @@
 package de.pianoman911.nawater.grabbing;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import de.pianoman911.nawater.NaWater;
 import de.pianoman911.nawater.data.Dashboard;
 
 import java.io.IOException;
@@ -15,7 +15,6 @@ import java.util.concurrent.CompletableFuture;
 public class DataGrabber {
 
     public static final HttpClient CLIENT = HttpClient.newHttpClient();
-    public static final Gson GSON = new Gson();
 
     public static CompletableFuture<Dashboard> request(UUID dashboardId) {
         return CompletableFuture.supplyAsync(() -> {
@@ -44,7 +43,7 @@ public class DataGrabber {
 
             try {
                 HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-                return Dashboard.of(GSON.fromJson(response.body(), JsonObject.class).getAsJsonObject("data").getAsJsonObject("dashboard"));
+                return Dashboard.of(NaWater.GSON.fromJson(response.body(), JsonObject.class).getAsJsonObject("data").getAsJsonObject("dashboard"));
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }

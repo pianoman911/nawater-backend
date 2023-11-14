@@ -69,4 +69,8 @@ public class NaWaterConsole extends SimpleTerminalConsole {
         LOGGER.info("Received termination signal, shutting down...");
         this.service.shutdown(true);
     }
+
+    public void startThread() {
+        new Thread(this::start, "Monopol Console Thread").start();
+    }
 }
