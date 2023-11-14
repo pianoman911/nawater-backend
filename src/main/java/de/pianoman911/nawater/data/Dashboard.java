@@ -2,7 +2,7 @@ package de.pianoman911.nawater.data;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import de.pianoman911.nawater.DataGrabber;
+import de.pianoman911.nawater.grabbing.DataGrabber;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package de.pianoman911.nawater;
+package de.pianoman911.nawater.grabbing;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
