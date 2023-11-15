@@ -50,7 +50,13 @@ public class DataQueryApi implements HttpHandler {
                 for (int i = 0; i < array.size(); i++) {
                     JsonObject object = array.get(i).getAsJsonObject();
                     jsInnerX.add(object.get("timestamp").getAsLong());
-                    jsInnerY.add(object.get("height").getAsDouble());
+
+                    double height = object.get("height").getAsDouble();
+                    if (height < 0) {
+                        jsInnerY.add("null");
+                    } else {
+                        jsInnerY.add(height);
+                    }
                 }
                 array = new JsonArray();
                 array.add(jsInnerX);

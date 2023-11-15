@@ -1,6 +1,7 @@
 package de.pianoman911.nawater;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import de.pianoman911.nawater.archiver.Archiver;
 import de.pianoman911.nawater.archiver.SQLArchiver;
 import de.pianoman911.nawater.config.ConfigLoader;
@@ -17,7 +18,7 @@ import java.nio.file.Path;
 
 public class NaWater {
 
-    public static final Gson GSON = new Gson();
+    public static final Gson GSON = new GsonBuilder().serializeNulls().create();
     private static final Logger LOGGER = LogManager.getLogger("NaWater");
 
     static {

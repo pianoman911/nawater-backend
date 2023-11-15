@@ -5,7 +5,7 @@
             <PatternLayout>
                 <LoggerNamePatternSelector
                         defaultPattern="%highlightError{[%d{HH:mm:ss} %level]: [%logger] %minecraftFormatting{%msg}%n%xEx}">
-                    <PatternMatch key="de.pianoman911.monopol"
+                    <PatternMatch key="de.pianoman911.nawater"
                                   pattern="%highlightError{[%d{HH:mm:ss} %level]: %minecraftFormatting{%msg}%n%xEx}"/>
                 </LoggerNamePatternSelector>
             </PatternLayout>

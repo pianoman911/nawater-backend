@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
 import java.io.ByteArrayOutputStream
 import java.util.stream.Stream
 import kotlin.streams.asStream
@@ -6,6 +7,7 @@ plugins {
     id("java-library")
 
     id("application")
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "de.pianoman911"
@@ -42,7 +44,6 @@ dependencies {
     api("net.minecrell:terminalconsoleappender:1.3.0")
     runtimeOnly("org.jline:jline-terminal-jansi:3.21.0")
     runtimeOnly("com.lmax:disruptor:3.4.4")
-
 }
 
 java {
@@ -52,8 +53,10 @@ java {
     }
 }
 
+val main = "de.pianoman911.nawater.NaWaterMain"
+
 application {
-    mainClass.set("de.pianoman911.nawater.NaWaterMain")
+    mainClass.set(main)
 }
 
 tasks {
@@ -62,11 +65,21 @@ tasks {
                 "Implementation-Vendor" to "pianoman911",
                 "Implementation-Version" to project.version,
                 "Implementation-Title" to project.name,
+                "Main-Class" to main,
 
                 "Git-Commit" to gitRevParse("short"),
                 "Git-Branch" to gitRevParse("abbrev-ref"),
                 "Timestamp" to System.currentTimeMillis().toString(),
         )
+    }
+
+    shadowJar {
+        transform(Log4j2PluginsCacheFileTransformer::class.java)
+        minimize()
+    }
+
+    build {
+        dependsOn(shadowJar)
     }
 }
 
