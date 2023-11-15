@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 
 public class NaWaterConsole extends SimpleTerminalConsole {
 
-    private static final Logger LOGGER = LogManager.getLogger(SimpleTerminalConsole.class);
+    private static final Logger LOGGER = LogManager.getLogger("NodeConsole");
     private static final Executor EXECUTOR = Executors.newCachedThreadPool();
 
     private final NaWater service;

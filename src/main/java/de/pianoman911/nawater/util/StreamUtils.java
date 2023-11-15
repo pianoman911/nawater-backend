@@ -1,5 +1,6 @@
 package de.pianoman911.nawater.util;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.pianoman911.nawater.NaWater;
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +42,7 @@ public class StreamUtils {
         return NaWater.GSON.fromJson(readFully(is), JsonObject.class);
     }
 
-    public static void writeJsonFully(JsonObject json, OutputStream os) {
+    public static void writeJsonFully(JsonElement json, OutputStream os) {
         writeFully(NaWater.GSON.toJson(json), os);
     }
 }
