@@ -1,34 +1,45 @@
 package de.pianoman911.nawater.data;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public record DashboardDataEntry(LocalDateTime capturedAt, double height) {
     public static List<DashboardDataEntry> of(JsonObject data) {
         List<DashboardDataEntry> entries = new ArrayList<>();
-        data.asMap().forEach((key, value) -> {
-            JsonArray array = value.getAsJsonArray();
+
+        JsonArray arrayData = null;
+        double currentHeight = -1;
+
+        for (Map.Entry<String, JsonElement> entry : data.asMap().entrySet()) {
+            JsonArray array = entry.getValue().getAsJsonArray();
             if (array.get(0).isJsonArray()) { // Sometimes the data is not a JsonArray; I don't know why
-                array.get(0).getAsJsonArray().forEach(element -> {
-                    if (element instanceof JsonArray inner) {
-                        entries.add(createEntry(inner));
-                    }
-                });
+                arrayData = array.get(0).getAsJsonArray();
+            } else {
+                currentHeight = array.get(0).getAsDouble();
             }
-        });
+        }
+        for (JsonElement element : arrayData) {
+            if (element instanceof JsonArray inner) {
+                entries.add(createEntry(inner, currentHeight));
+            }
+        }
+
         return entries;
     }
 
-    private static DashboardDataEntry createEntry(JsonArray array) {
+    private static DashboardDataEntry createEntry(JsonArray array, double currentHeight) {
         if (array.get(1).isJsonNull()) {
+            System.out.println("Null: " + currentHeight);
             return new DashboardDataEntry(
                     LocalDateTime.parse(array.get(0).getAsString()),
-                    -1
+                    currentHeight
             );
         }
         return new DashboardDataEntry(
