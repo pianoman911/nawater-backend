@@ -36,7 +36,6 @@ public record DashboardDataEntry(LocalDateTime capturedAt, double height) {
 
     private static DashboardDataEntry createEntry(JsonArray array, double currentHeight) {
         if (array.get(1).isJsonNull()) {
-            System.out.println("Null: " + currentHeight);
             return new DashboardDataEntry(
                     LocalDateTime.parse(array.get(0).getAsString()),
                     currentHeight
