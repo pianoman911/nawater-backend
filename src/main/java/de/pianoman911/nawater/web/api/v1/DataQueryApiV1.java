@@ -1,4 +1,4 @@
-package de.pianoman911.nawater.web.api;
+package de.pianoman911.nawater.web.api.v1;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -12,11 +12,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataQueryApi implements HttpHandler {
+public class DataQueryApiV1 implements HttpHandler {
 
     private final NaWater service;
 
-    public DataQueryApi(NaWater service) {
+    public DataQueryApiV1(NaWater service) {
         this.service = service;
     }
 

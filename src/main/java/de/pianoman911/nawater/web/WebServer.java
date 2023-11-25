@@ -3,7 +3,8 @@ package de.pianoman911.nawater.web;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import de.pianoman911.nawater.NaWater;
-import de.pianoman911.nawater.web.api.DataQueryApi;
+import de.pianoman911.nawater.web.api.v1.DataQueryApiV1;
+import de.pianoman911.nawater.web.api.v2.DataQueryApiV2;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -44,7 +45,9 @@ public class WebServer extends Thread {
             throw new RuntimeException(exception);
         }
         server.createContext("/", new RootHandler());
-        server.createContext("/api/v1/query", new DataQueryApi(service));
+        server.createContext("/api/v1/query", new DataQueryApiV1(service));
+
+        server.createContext("/api/v2/query", new DataQueryApiV2(service));
 
         server.start();
     }
