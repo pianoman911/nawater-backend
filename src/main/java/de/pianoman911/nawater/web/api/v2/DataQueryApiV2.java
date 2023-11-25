@@ -108,7 +108,11 @@ public class DataQueryApiV2 implements HttpHandler {
             for (JsonElement value : values) {
                 JsonObject valueObject = value.getAsJsonObject();
                 if (valueObject.get("timestamp").getAsLong() == date) {
-                    lastValue = valueObject.get("height").getAsDouble();
+                    double height = valueObject.get("height").getAsDouble();
+                    if (height < 0) {
+                        continue;
+                    }
+                    lastValue = height;
                     object.addProperty("height", lastValue);
                     found = true;
                     break;
@@ -116,6 +120,7 @@ public class DataQueryApiV2 implements HttpHandler {
             }
             if (!found) {
                 object.addProperty("height", lastValue);
+                System.out.println("No value for date " + date + ", using last value " + lastValue);
             }
             array.add(object);
         }
