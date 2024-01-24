@@ -1,4 +1,4 @@
-package de.pianoman911.nawater.data;
+package de.pianoman911.nawater.data.water;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

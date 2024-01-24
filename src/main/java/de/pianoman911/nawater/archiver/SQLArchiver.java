@@ -4,8 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.pianoman911.nawater.NaWater;
 import de.pianoman911.nawater.config.NaWaterConfig;
-import de.pianoman911.nawater.data.Dashboard;
-import de.pianoman911.nawater.data.DashboardDataEntry;
+import de.pianoman911.nawater.data.water.Dashboard;
+import de.pianoman911.nawater.data.water.DashboardDataEntry;
 import org.mariadb.jdbc.MariaDbDataSource;
 
 import java.sql.Connection;

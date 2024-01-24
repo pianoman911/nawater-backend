@@ -2,7 +2,7 @@ package de.pianoman911.nawater.grabbing;
 
 import com.google.gson.JsonObject;
 import de.pianoman911.nawater.NaWater;
-import de.pianoman911.nawater.data.Dashboard;
+import de.pianoman911.nawater.data.water.Dashboard;
 
 import java.io.IOException;
 import java.net.URI;

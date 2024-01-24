@@ -1,7 +1,7 @@
 package de.pianoman911.nawater.archiver;
 
 import com.google.gson.JsonArray;
-import de.pianoman911.nawater.data.Dashboard;
+import de.pianoman911.nawater.data.water.Dashboard;
 
 public interface Archiver {
 
