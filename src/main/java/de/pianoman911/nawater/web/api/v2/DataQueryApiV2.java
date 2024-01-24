@@ -64,7 +64,7 @@ public class DataQueryApiV2 implements HttpHandler {
                 }
             }
             if (chartJs) {
-                JsonArray datesArray = new JsonArray();
+                JsonArray datesArray = new JsonArray(dates.size());
                 for (long date : dates) {
                     datesArray.add(date);
                 }
@@ -72,15 +72,15 @@ public class DataQueryApiV2 implements HttpHandler {
             }
             for (Map.Entry<String, JsonArray> entry : data.entrySet()) {
                 JsonArray values = fixedArray(entry.getValue(), dates);
-                for (JsonElement value : values) {
-                    if (chartJs) {
-                        JsonArray heights = new JsonArray();
-                        for (JsonElement element : values) {
-                            JsonObject object1 = element.getAsJsonObject();
-                            heights.add(object1.get("height"));
-                        }
-                        object.add(entry.getKey(), heights);
-                    } else {
+                if (chartJs) {
+                    JsonArray heights = new JsonArray(values.size());
+                    for (JsonElement element : values) {
+                        JsonObject object1 = element.getAsJsonObject();
+                        heights.add(object1.get("height"));
+                    }
+                    object.add(entry.getKey(), heights);
+                } else {
+                    for (JsonElement value : values) {
                         object.add(entry.getKey(), value);
                     }
                 }
@@ -99,26 +99,25 @@ public class DataQueryApiV2 implements HttpHandler {
 
     // Sometimes the values array has no data for a specific date, so we need to fill it with the previous value
     private JsonArray fixedArray(JsonArray values, List<Long> dates) {
-        JsonArray array = new JsonArray();
+        JsonArray array = new JsonArray(dates.size()); // min size
         double lastValue = -1;
+        Map<Long, Double> data = new HashMap<>();
+        for (JsonElement value : values) {
+            JsonObject object = value.getAsJsonObject();
+            data.put(object.get("timestamp").getAsLong(), object.get("height").getAsDouble());
+        }
         for (long date : dates) {
             JsonObject object = new JsonObject();
             object.addProperty("timestamp", date);
-            boolean found = false;
-            for (JsonElement value : values) {
-                JsonObject valueObject = value.getAsJsonObject();
-                if (valueObject.get("timestamp").getAsLong() == date) {
-                    double height = valueObject.get("height").getAsDouble();
-                    if (height < 0) {
-                        continue;
-                    }
-                    lastValue = height;
-                    object.addProperty("height", lastValue);
-                    found = true;
-                    break;
+
+            Double height = data.get(date);
+            if (height != null) {
+                if (height < 0) {
+                    continue;
                 }
-            }
-            if (!found) {
+                lastValue = height;
+                object.addProperty("height", lastValue);
+            } else {
                 object.addProperty("height", lastValue);
                 System.out.println("No value for date " + date + ", using last value " + lastValue);
             }

@@ -21,6 +21,9 @@ dependencies {
     // GSON
     api("com.google.code.gson:gson:2.10.1")
 
+    // Caching
+    api("com.github.ben-manes.caffeine:caffeine:3.1.8")
+
     // Logging
     val log4jVersion = "2.19.0"
     api("org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion")

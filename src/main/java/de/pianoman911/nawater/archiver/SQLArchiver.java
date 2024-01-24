@@ -1,5 +1,7 @@
 package de.pianoman911.nawater.archiver;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.pianoman911.nawater.NaWater;
@@ -13,10 +15,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneOffset;
+import java.util.concurrent.TimeUnit;
 
 public class SQLArchiver implements Archiver {
 
     private final MariaDbDataSource dataSource;
+    private final LoadingCache<DashboardCacheKey, JsonArray> cache = Caffeine.newBuilder()
+            .maximumSize(1000)
+            .expireAfterAccess(1, TimeUnit.DAYS)
+            .build(key -> query0(key.dashboardId(), key.from(), key.to()));
 
     public SQLArchiver(NaWater naWater) {
         NaWaterConfig.MySql config = naWater.getConfig().mysql;
@@ -49,10 +56,27 @@ public class SQLArchiver implements Archiver {
         } catch (SQLException exception) {
             throw new RuntimeException(exception);
         }
+        this.cache.asMap().keySet().removeIf(key -> {
+            if (key.dashboardId().equals(dashboard.id().toString())) {
+                long from = key.from;
+                long to = key.to;
+                for (DashboardDataEntry entry : dashboard.dashboardData().entries()) {
+                    long stamp = entry.capturedAt().toInstant(ZoneOffset.UTC).getEpochSecond();
+                    if (stamp >= from && stamp <= to) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
     }
 
     @Override
     public JsonArray query(String dashboardId, long from, long to) {
+        return this.cache.get(new DashboardCacheKey(dashboardId, from, to));
+    }
+
+    private JsonArray query0(String dashboardId, long from, long to) {
         JsonArray array = new JsonArray();
         try (
                 Connection connection = this.dataSource.getConnection();
@@ -74,5 +98,8 @@ public class SQLArchiver implements Archiver {
             throw new RuntimeException(exception);
         }
         return array;
+    }
+
+    private record DashboardCacheKey(String dashboardId, long from, long to) {
     }
 }

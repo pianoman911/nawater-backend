@@ -8,6 +8,8 @@ import de.pianoman911.nawater.web.api.v2.DataQueryApiV2;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class WebServer extends Thread {
 
@@ -48,6 +50,13 @@ public class WebServer extends Thread {
         server.createContext("/api/v1/query", new DataQueryApiV1(service));
 
         server.createContext("/api/v2/query", new DataQueryApiV2(service));
+
+        AtomicInteger threadCount = new AtomicInteger(1);
+        server.setExecutor(Executors.newCachedThreadPool(r -> {
+            Thread thread = new Thread(r, "WebServer-" + threadCount.getAndIncrement());
+            thread.setDaemon(true);
+            return thread;
+        }));
 
         server.start();
     }
